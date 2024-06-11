@@ -1,0 +1,99 @@
+name: CI Tauri-Nuxt
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-Linux:
+    runs-on: "ubuntu-22.04"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: install dependencies (ubuntu only)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build Ubuntu
+        run: pnpm tauri build
+      - name: Testing
+        run: pnpm run test
+  build-Windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Ajouter la cible windows
+        run: rustup target add i686-pc-windows-msvc
+      - name: Install Tauri
+        run: pnpm i -g @tauri-apps/cli
+      - name: Installer les dépendances
+        run: pnpm install
+      - name: Build Windows
+        run: pnpm tauri build --target i686-pc-windows-msvc
+      - name: Testing
+        run: pnpm run test
+  build-MacOS-ARM64:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Ajouter la cible Apple(aarch64)
+        run: rustup target add aarch64-apple-darwin
+      - name: Installer les dépendances
+        run: pnpm install
+      - name: Build MacOS (aarch64)
+        run: pnpm tauri build --target aarch64-apple-darwin
+      - name: Testing
+        run: pnpm run test
+  build-MacOS-X86:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Ajouter la cible Apple(x86)
+        run: rustup target add x86_64-apple-darwin
+      - name: Installer les dépendances
+        run: pnpm install
+      - name: Build MacOS (x86)
+        run: pnpm tauri build --target x86_64-apple-darwin
+      - name: Testing
+        run: pnpm run test
