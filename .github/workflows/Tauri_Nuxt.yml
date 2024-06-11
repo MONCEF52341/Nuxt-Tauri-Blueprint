@@ -26,8 +26,8 @@ jobs:
         run: pnpm run webbuild
       - name: Testing
         run: pnpm run test
-  RedHat-8:
-    runs-on: "rhel-8"
+  Ubuntu:
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,12 +40,13 @@ jobs:
           cache: "pnpm"
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
-      - name: Install dependencies (Red Hat)
+      - name: Install dependencies (Ubuntu)
         run: |
-          sudo yum install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - name: Install dependencies
         run: pnpm install
-      - name: Build Red Hat
+      - name: Build Ubuntu
         run: pnpm run deskbuild
       - name: Testing
         run: pnpm run test
