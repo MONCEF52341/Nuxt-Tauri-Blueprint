@@ -26,7 +26,7 @@ jobs:
         run: pnpm run webbuild
       - name: Testing
         run: pnpm run test
-  Linux:
+  Ubuntu:
     runs-on: "ubuntu-22.04"
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +47,75 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build Ubuntu
+        run: pnpm run deskbuild
+      - name: Testing
+        run: pnpm run test
+  RedHat-8:
+    runs-on: "rhel-8"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies (Red Hat)
+        run: |
+          sudo yum install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build Red Hat
+        run: pnpm run deskbuild
+      - name: Testing
+        run: pnpm run test
+  RedHat-9:
+    runs-on: "rhel-9"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies (Red Hat)
+        run: |
+          sudo yum install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build Red Hat
+        run: pnpm run deskbuild
+      - name: Testing
+        run: pnpm run test
+  Arch:
+    runs-on: "arch-latest"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies (Arch)
+        run: |
+          sudo pacman -Sy --noconfirm libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build Arch
         run: pnpm run deskbuild
       - name: Testing
         run: pnpm run test
