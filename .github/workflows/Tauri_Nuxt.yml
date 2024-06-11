@@ -2,13 +2,31 @@ name: CI Tauri-Nuxt
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
+      - main
       - master
 
 jobs:
-  build-Linux:
+  Web:
+    runs-on: "ubuntu-22.04"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build web
+        run: pnpm run webbuild
+      - name: Testing
+        run: pnpm run test
+  Linux:
     runs-on: "ubuntu-22.04"
     steps:
       - uses: actions/checkout@v4
@@ -29,10 +47,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build Ubuntu
-        run: pnpm tauri build
+        run: pnpm run deskbuild
       - name: Testing
         run: pnpm run test
-  build-Windows:
+  Windows:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -52,10 +70,10 @@ jobs:
       - name: Installer les dépendances
         run: pnpm install
       - name: Build Windows
-        run: pnpm tauri build --target i686-pc-windows-msvc
+        run: pnpm run deskbuild --target i686-pc-windows-msvc
       - name: Testing
         run: pnpm run test
-  build-MacOS-ARM64:
+  MacOS-ARM64:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
@@ -73,10 +91,10 @@ jobs:
       - name: Installer les dépendances
         run: pnpm install
       - name: Build MacOS (aarch64)
-        run: pnpm tauri build --target aarch64-apple-darwin
+        run: pnpm run deskbuild --target aarch64-apple-darwin
       - name: Testing
         run: pnpm run test
-  build-MacOS-X86:
+  MacOS-X86:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
@@ -94,6 +112,6 @@ jobs:
       - name: Installer les dépendances
         run: pnpm install
       - name: Build MacOS (x86)
-        run: pnpm tauri build --target x86_64-apple-darwin
+        run: pnpm run deskbuild --target x86_64-apple-darwin
       - name: Testing
         run: pnpm run test
