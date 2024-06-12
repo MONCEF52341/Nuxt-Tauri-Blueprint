@@ -10,6 +10,8 @@ RUN pnpm install
 
 COPY . .
 
+RUN pnpm run webbuild
+
 EXPOSE 3000
 
-CMD ["pnpm", "run", "build"]
+CMD ["node", ".output/server/index.mjs"]
